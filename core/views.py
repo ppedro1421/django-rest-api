@@ -10,6 +10,7 @@ from .models import *
 from .serializers import *
 
 
+# CLIENT
 @api_view(['GET'])
 @renderer_classes([JSONRenderer, XMLRenderer])
 @permission_classes([AllowAny])
@@ -20,20 +21,18 @@ def list_client(request: Request) -> Response:
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     serializer = ClientSerializer(clients, many=True)
-
     return Response(data=serializer.data, status=status.HTTP_200_OK)
 
 @api_view(['GET'])
 @renderer_classes([JSONRenderer, XMLRenderer])
 @permission_classes([AllowAny])
 def detail_client(request: Request, id: int) -> Response:
-    client = Client.objects.filter(id=id)
+    client = Client.objects.filter(pk=id)
 
     if not client.exists():
         return Response(status=status.HTTP_404_NOT_FOUND)
 
     serializer = ClientSerializer(client.first(), many=False)
-
     return Response(data=serializer.data, status=status.HTTP_200_OK)
 
 
@@ -45,7 +44,6 @@ def create_client(request: Request) -> Response:
 
     if serializer.is_valid(raise_exception=True):
         serializer.create(serializer.data)
-
         return Response(status=status.HTTP_201_CREATED)
 
     return Response(status=status.HTTP_400_BAD_REQUEST)
@@ -55,11 +53,62 @@ def create_client(request: Request) -> Response:
 @renderer_classes([JSONRenderer, XMLRenderer])
 @permission_classes([AllowAny])
 def delete_client(request: Request, id: int) -> Response:
-    client = Client.objects.filter(id=id)
+    client = Client.objects.filter(pk=id)
 
     if not client.exists():
         return Response(status=status.HTTP_404_NOT_FOUND)
 
     client.delete()
+    return Response(status=status.HTTP_200_OK)
 
+
+# EMPLOYEE
+@api_view(['GET'])
+@renderer_classes([JSONRenderer, XMLRenderer])
+@permission_classes([AllowAny])
+def list_employe(request: Request) -> Response:
+    employee = ClientEmployee.objects
+
+    if not employee.exists():
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    serializer = ClientEmployeeSerializer(employee, many=True)
+    return Response(data=serializer.data, status=status.HTTP_200_OK)
+
+@api_view(['GET'])
+@renderer_classes([JSONRenderer, XMLRenderer])
+@permission_classes([AllowAny])
+def detail_employe(request: Request, id: int) -> Response:
+    employee = ClientEmployee.objects.filter(pk=id)
+
+    if not employee.exists():
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    serializer = ClientEmployeeSerializer(employee.first(), many=False)
+    return Response(data=serializer.data, status=status.HTTP_200_OK)
+
+
+@api_view(['POST'])
+@renderer_classes([JSONRenderer, XMLRenderer])
+@permission_classes([AllowAny])
+def create_employe(request: Request) -> Response:
+    serializer = ClientEmployeeSerializer(data=request.data)
+
+    if serializer.is_valid(raise_exception=True):
+        serializer.create(request.data)
+        return Response(status=status.HTTP_201_CREATED)
+
+    return Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['DELETE'])
+@renderer_classes([JSONRenderer, XMLRenderer])
+@permission_classes([AllowAny])
+def delete_client(request: Request, id: int) -> Response:
+    employee = ClientEmployee.objects.filter(pk=id)
+
+    if not employee.exists():
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    employee.delete()
     return Response(status=status.HTTP_200_OK)
