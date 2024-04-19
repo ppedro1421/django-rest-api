@@ -3,12 +3,20 @@ from .views import *
 
 
 urlpatterns = [
-    path('client/list', list_client, name='client-list'),
-    path('client/detail/<int:pk>', detail_client, name='client-detail'),
-    path('client/create', create_client, name='client-create'),
-    path('client/delete/<int:pk>', delete_client, name='client-delete'),
+    # EMPLOYER
+    path('employer/list', list_employer, name='employer-list'),
+    path('employer/detail/<int:pk>', detail_employer, name='employer-detail'),
+    path('employer/create', create_employer, name='employer-create'),
+    path('employer/delete/<int:pk>', delete_employer, name='employer-delete'),
 
+    # ROLE
+    path('role/list', list_role, name='role-list'),
+    path('role/create', create_role, name='role-create'),
+    path('role/delete/<int:pk>', delete_role, name='role-delete'),
+
+    # EMPLOYEE
     path('employee/list', list_employee, name='employee-list'),
     path('employee/detail/<int:pk>', detail_employee, name='employee-detail'),
     path('employee/create', create_employee, name='employee-create'),
+    path('employee/delete/<int:pk>', delete_employee, name='employee-delete'),
 ]
