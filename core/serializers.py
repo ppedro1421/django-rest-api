@@ -17,7 +17,7 @@ class EmployerSerializer(serializers.ModelSerializer):
         employer.save()
         return validated_data
 
-    def update(self, instance, validated_data):
+    def update(self, instance: Employer, validated_data):
         instance.name = validated_data.get('name', instance.name)
         instance.save()
         return instance
@@ -34,12 +34,13 @@ class RoleSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         role = Role()
-        role.employer = Employer.objects.get(pk=validated_data.get('employer'))
+        role.employer = validated_data.get('employer')
         role.description = validated_data.get('description')
         role.save()
         return validated_data
 
-    def update(self, instance, validated_data):
+    def update(self, instance: Role, validated_data):
+        instance.employer = validated_data.get('employer')
         instance.description = validated_data.get('description', instance.description)
         instance.save()
         return instance
@@ -56,17 +57,19 @@ class EmployeeSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         employee = Employee()
-        employee.employer = Employer.objects.get(pk=validated_data.get('employer'))
+        employee.employer = validated_data.get('employer')
         employee.first_name = validated_data.get('first_name')
         employee.last_name = validated_data.get('last_name')
-        employee.role = Role.objects.get(pk=validated_data.get('role'))
+        employee.role = validated_data.get('role')
         employee.salary = validated_data.get('salary')
         employee.save()
         return validated_data
 
-    def update(self, instance, validated_data):
+    def update(self, instance: Employee, validated_data):
+        instance.employer = validated_data.get('employer')
         instance.first_name = validated_data.get('first_name', instance.first_name)
         instance.last_name = validated_data.get('last_name', instance.last_name)
+        instance.role = validated_data.get('role')
         instance.salary = validated_data.get('salary', instance.salary)
         instance.save()
         return instance

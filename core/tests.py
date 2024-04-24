@@ -44,6 +44,14 @@ class EmployerTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(Employer.objects.count(), 0)
 
+    def test_update_employer(self):
+        employer = Employer.objects.create(**self.data)
+        response = self.client.put(reverse('employer-update', args=[employer.id]), {
+            'name': 'Updated'
+        })
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(Employer.objects.get().name, 'Updated')
+
 
 class RoleTest(APITestCase):
     def setUp(self):
@@ -65,8 +73,21 @@ class RoleTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 0)
 
+    def test_detail_role(self):
+        role = Role.objects.create(**self.data)
+        response = self.client.get(reverse('role-detail', args=[role.id]))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data.get('description'), 'TESTER')
+
+    def test_detail_role_not_found(self):
+        response = self.client.get(reverse('role-detail', args=[1]))
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
     def test_create_role(self):
-        response = self.client.post(reverse('role-create'), {**self.data, 'employer': self.employer.id})
+        response = self.client.post(reverse('role-create'), {
+            **self.data,
+            'employer': self.employer.id
+        })
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Role.objects.count(), 1)
         self.assertEqual(Role.objects.get().description, 'TESTER')
@@ -75,6 +96,15 @@ class RoleTest(APITestCase):
         response = self.client.post(reverse('role-create'))
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(Role.objects.count(), 0)
+
+    def test_update_role(self):
+        role = Role.objects.create(**self.data)
+        response = self.client.put(reverse('role-update', args=[role.id]), {
+            'employer': self.employer.id,
+            'description': 'Updated'
+        })
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(Role.objects.get().description, 'Updated')
 
 
 class ClientEmployeeTest(APITestCase):
@@ -127,7 +157,11 @@ class ClientEmployeeTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_create_employee(self):
-        response = self.client.post(reverse('employee-create'), {**self.data, 'employer': self.employer.id, 'role': self.role.id})
+        response = self.client.post(reverse('employee-create'), {
+            **self.data,
+            'employer': self.employer.id,
+            'role': self.role.id
+        })
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Employee.objects.count(), 1)
         self.assertEqual(Employee.objects.get().employer, self.employer)
@@ -136,3 +170,14 @@ class ClientEmployeeTest(APITestCase):
         response = self.client.post(reverse('employee-create'))
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(Employee.objects.count(), 0)
+
+    def test_update_employee(self):
+        employee = Employee.objects.create(**self.data)
+        response = self.client.put(reverse('employee-update', args=[employee.id]), {
+            **self.data, 
+            'employer': self.employer.id, 
+            'role': self.role.id,
+            'first_name': 'Updated'
+        })
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(Employee.objects.get().first_name, 'Updated')
