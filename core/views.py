@@ -16,7 +16,7 @@ from .serializers import *
 @api_view(['GET'])
 @renderer_classes([JSONRenderer, XMLRenderer])
 @permission_classes([AllowAny])
-def list_employer(request: Request) -> Response:
+def list_employer(_) -> Response:
     employers = Employer.objects
     serializer = EmployerSerializer(employers, many=True)
     return Response(data=serializer.data, status=status.HTTP_200_OK)
@@ -25,7 +25,7 @@ def list_employer(request: Request) -> Response:
 @api_view(['GET'])
 @renderer_classes([JSONRenderer, XMLRenderer])
 @permission_classes([AllowAny])
-def detail_employer(request: Request, pk: int) -> Response:
+def detail_employer(_, pk: str) -> Response:
     employer = get_object_or_404(Employer, pk=pk)
     serializer = EmployerSerializer(employer, many=False)
     return Response(data=serializer.data, status=status.HTTP_200_OK)
@@ -45,7 +45,7 @@ def create_employer(request: Request) -> Response:
 @api_view(['PUT'])
 @renderer_classes([JSONRenderer, XMLRenderer])
 @permission_classes([AllowAny])
-def update_employer(request: Request, pk: int) -> Response:
+def update_employer(request: Request, pk: str) -> Response:
     employer = get_object_or_404(Employer, pk=pk)
     serializer = EmployerSerializer(employer, data=request.data)
     if not serializer.is_valid(raise_exception=True):
@@ -57,7 +57,7 @@ def update_employer(request: Request, pk: int) -> Response:
 @api_view(['DELETE'])
 @renderer_classes([JSONRenderer, XMLRenderer])
 @permission_classes([AllowAny])
-def delete_employer(request: Request, pk: int) -> Response:
+def delete_employer(_, pk: str) -> Response:
     employer = get_object_or_404(Employer, pk=pk)
     employer.delete()
     return Response(status=status.HTTP_200_OK)
@@ -82,7 +82,7 @@ def list_role(request: Request) -> Response:
 @api_view(['GET'])
 @renderer_classes([JSONRenderer, XMLRenderer])
 @permission_classes([AllowAny])
-def detail_role(request: Request, pk: int) -> Response:
+def detail_role(_, pk: str) -> Response:
     role = get_object_or_404(Role, pk=pk)
     serializer = RoleSerializer(role, many=False)
     return Response(data=serializer.data, status=status.HTTP_200_OK)
@@ -102,7 +102,7 @@ def create_role(request: Request) -> Response:
 @api_view(['PUT'])
 @renderer_classes([JSONRenderer, XMLRenderer])
 @permission_classes([AllowAny])
-def update_role(request: Request, pk: int) -> Response:
+def update_role(request: Request, pk: str) -> Response:
     role = get_object_or_404(Role, pk=pk)
     serializer = RoleSerializer(role, data=request.data)
     if not serializer.is_valid(raise_exception=True):
@@ -114,7 +114,7 @@ def update_role(request: Request, pk: int) -> Response:
 @api_view(['DELETE'])
 @renderer_classes([JSONRenderer, XMLRenderer])
 @permission_classes([AllowAny])
-def delete_role(request: Request, pk: int) -> Response:
+def delete_role(_, pk: str) -> Response:
     role = get_object_or_404(Role, pk=pk)
     role.delete()
     return Response(status=status.HTTP_200_OK)
@@ -148,7 +148,7 @@ def list_employee(request: Request) -> Response:
 @api_view(['GET'])
 @renderer_classes([JSONRenderer, XMLRenderer])
 @permission_classes([AllowAny])
-def detail_employee(request: Request, pk: int) -> Response:
+def detail_employee(_, pk: str) -> Response:
     employee = get_object_or_404(Employee, pk=pk)
     serializer = EmployeeSerializer(employee, many=False)
     return Response(data=serializer.data, status=status.HTTP_200_OK)
@@ -168,7 +168,7 @@ def create_employee(request: Request) -> Response:
 @api_view(['PUT'])
 @renderer_classes([JSONRenderer, XMLRenderer])
 @permission_classes([AllowAny])
-def update_employee(request: Request, pk: int) -> Response:
+def update_employee(request: Request, pk: str) -> Response:
     employee = get_object_or_404(Employee, pk=pk)
     serializer = EmployeeSerializer(employee, data=request.data)
     if not serializer.is_valid(raise_exception=True):
@@ -180,7 +180,7 @@ def update_employee(request: Request, pk: int) -> Response:
 @api_view(['DELETE'])
 @renderer_classes([JSONRenderer, XMLRenderer])
 @permission_classes([AllowAny])
-def delete_employee(request: Request, pk: int) -> Response:
+def delete_employee(_, pk: str) -> Response:
     employee = get_object_or_404(Employee, pk=pk)
     employee.delete()
     return Response(status=status.HTTP_204_NO_CONTENT)
