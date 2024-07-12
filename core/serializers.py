@@ -5,7 +5,6 @@ from .models import *
 class EmployerSerializer(serializers.ModelSerializer):
 
     class EmployeeSerializer(serializers.ModelSerializer):
-        role = serializers.CharField(source='role.description', read_only=True)
 
         class Meta:
             model = Employee
@@ -28,29 +27,6 @@ class EmployerSerializer(serializers.ModelSerializer):
 
     def update(self, instance: Employer, validated_data: dict):
         instance.name = validated_data.get('name', instance.name)
-        instance.save()
-        return instance
-
-
-class RoleSerializer(serializers.ModelSerializer):
-    employer = serializers.CharField(source='employer.name', read_only=True)
-
-    class Meta:
-        model = Role
-        fields = '__all__'
-
-    def validate(self, attrs: dict):
-        return attrs
-
-    def create(self, validated_data: dict):
-        role = Role()
-        role.employer = validated_data.get('employer')
-        role.description = validated_data.get('description')
-        role.save()
-        return role
-
-    def update(self, instance: Role, validated_data: dict):
-        instance.description = validated_data.get('description', instance.description)
         instance.save()
         return instance
 
