@@ -1,11 +1,45 @@
+from django.contrib.auth.models import User
+from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
 from .models import *
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'password']
+        extra_kwargs = {'password': {'write_only': True}}
+
+    def validate_password(self, value):
+        username = self.initial_data.get('username', '')
+        user = User(username=username)
+        validate_password(value, user)
+        return value
+
+    def create(self, validated_data: dict):
+        user = User.objects.create_user(**validated_data)
+        return user
+
+
+class ChangePasswordSerializer(serializers.Serializer):
+    old_password = serializers.CharField(required=True)
+    new_password = serializers.CharField(required=True)
+
+    def validate_old_password(self, value):
+        user: User = self.context['request'].user
+        if not user.check_password(value):
+            raise serializers.ValidationError("A senha antiga está incorreta.")
+        return value
+
+    def validate_new_password(self, value):
+        user = self.context['request'].user
+        validate_password(value, user)
+        return value
 
 
 class EmployerSerializer(serializers.ModelSerializer):
 
     class EmployeeSerializer(serializers.ModelSerializer):
-
         class Meta:
             model = Employee
             exclude = ['employer']
@@ -15,9 +49,6 @@ class EmployerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Employer
         fields = '__all__'
-
-    def validate(self, attrs: dict):
-        return attrs
 
     def create(self, validated_data: dict):
         employer = Employer()
@@ -32,13 +63,9 @@ class EmployerSerializer(serializers.ModelSerializer):
 
 
 class EmployeeSerializer(serializers.ModelSerializer):
-
     class Meta:
         model = Employee
         fields = '__all__'
-
-    def validate(self, attrs: dict):
-        return attrs
 
     def create(self, validated_data: dict):
         employee = Employee()
